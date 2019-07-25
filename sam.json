@@ -1,0 +1,305 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Transform": "AWS::Serverless-2016-10-31",
+  "Description": "Exported by architect/package@1.0.35 on 2019-07-25T03:34:22.516Z",
+  "Resources": {
+    "Basic": {
+      "Type": "AWS::Serverless::Api",
+      "Properties": {
+        "StageName": "production",
+        "DefinitionBody": {
+          "openapi": "3.0.1",
+          "info": {
+            "title": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          "paths": {
+            "/": {
+              "get": {
+                "responses": {
+                  "200": {
+                    "description": "200 response"
+                  }
+                },
+                "x-amazon-apigateway-integration": {
+                  "uri": {
+                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetIndex.Arn}/invocations"
+                  },
+                  "responses": {
+                    "default": {
+                      "statusCode": "200",
+                      "contentHandling": "CONVERT_TO_TEXT"
+                    }
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "contentHandling": "CONVERT_TO_TEXT",
+                  "type": "aws_proxy"
+                }
+              }
+            },
+            "/{proxy+}": {
+              "x-amazon-apigateway-any-method": {
+                "parameters": [
+                  {
+                    "name": "proxy",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                ],
+                "x-amazon-apigateway-integration": {
+                  "uri": {
+                    "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetIndex.Arn}/invocations"
+                  },
+                  "responses": {
+                    "default": {
+                      "statusCode": "200"
+                    }
+                  },
+                  "passthroughBehavior": "when_no_match",
+                  "httpMethod": "POST",
+                  "cacheNamespace": "xlr8r",
+                  "cacheKeyParameters": [
+                    "method.request.path.proxy"
+                  ],
+                  "contentHandling": "CONVERT_TO_TEXT",
+                  "type": "aws_proxy"
+                }
+              }
+            }
+          }
+        },
+        "EndpointConfiguration": "REGIONAL",
+        "BinaryMediaTypes": [
+          "*~1*"
+        ],
+        "MinimumCompressionSize": 0
+      }
+    },
+    "GetIndex": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "index.handler",
+        "CodeUri": "./src/http/get-index",
+        "Runtime": "nodejs10.x",
+        "MemorySize": 1152,
+        "Timeout": 5,
+        "Environment": {
+          "Variables": {
+            "ARC_ROLE": {
+              "Ref": "Role"
+            },
+            "ARC_CLOUDFORMATION": {
+              "Ref": "AWS::StackName"
+            },
+            "ARC_APP_NAME": "basic",
+            "NODE_ENV": "production",
+            "SESSION_TABLE_NAME": "jwe",
+            "PYTHONPATH": "/var/task/vendor:/var/runtime:/opt/python"
+          }
+        },
+        "Role": {
+          "Fn::Sub": [
+            "arn:aws:iam::${AWS::AccountId}:role/${roleName}",
+            {
+              "roleName": {
+                "Ref": "Role"
+              }
+            }
+          ]
+        },
+        "Events": {
+          "GetIndexEvent": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/",
+              "Method": "GET",
+              "RestApiId": {
+                "Ref": "Basic"
+              }
+            }
+          }
+        }
+      }
+    },
+    "InvokeProxyPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetIndex"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": [
+            "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${restApiId}/*/*",
+            {
+              "restApiId": {
+                "Ref": "Basic"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "Role": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "ArcGlobalPolicy",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents",
+                    "logs:DescribeLogStreams"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "RoleReflectionPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "DependsOn": "Role",
+      "Properties": {
+        "PolicyName": "ArcRoleReflectionPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "iam:GetRolePolicy",
+              "Resource": {
+                "Fn::Sub": [
+                  "arn:aws:iam::${AWS::AccountId}:role/${role}",
+                  {
+                    "role": {
+                      "Ref": "Role"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "Role"
+          }
+        ]
+      }
+    },
+    "StorageMacroPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "DependsOn": "Role",
+      "Properties": {
+        "PolicyName": "StorageMacroPolicy",
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject"
+              ],
+              "Resource": [
+                {
+                  "Fn::Sub": [
+                    "arn:aws:s3:::${bucket}",
+                    {
+                      "bucket": {
+                        "Ref": "docsBucket"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "Role"
+          }
+        ]
+      }
+    },
+    "docsBucket": {
+      "Type": "AWS::S3::Bucket",
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "docsParam": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Type": "String",
+        "Name": {
+          "Fn::Sub": [
+            "/${AWS::StackName}/storage/${bucket}",
+            {
+              "bucket": "docs"
+            }
+          ]
+        },
+        "Value": {
+          "Ref": "docsBucket"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "API": {
+      "Description": "API Gateway",
+      "Value": {
+        "Fn::Sub": [
+          "https://${restApiId}.execute-api.${AWS::Region}.amazonaws.com/production/",
+          {
+            "restApiId": {
+              "Ref": "Basic"
+            }
+          }
+        ]
+      }
+    },
+    "restApiId": {
+      "Description": "HTTP restApiId",
+      "Value": {
+        "Ref": "Basic"
+      }
+    }
+  }
+}
