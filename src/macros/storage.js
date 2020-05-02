@@ -1,9 +1,11 @@
 module.exports = function storage(arc, cfn) {
-  
-  // only run if arc.storage is defined
-  if (arc.storage) { 
 
-    // first thing we do is declare a role for our macro resources
+  let arc['storage-private'] = storagePrivate
+
+  // Only run if arc.storage is defined
+  if (storagePrivate) {
+
+    // First thing we do is declare a role for our macro resources
     cfn.Resources.StorageMacroPolicy = {
       Type: 'AWS::IAM::Policy',
       DependsOn: 'Role',
@@ -24,21 +26,22 @@ module.exports = function storage(arc, cfn) {
       }
     }
     let resKeys = Object.keys(cfn.Resources);
-    // arc.storage is an array of names for our private buckets
-    arc.storage.forEach(bucket=> {
-      
-      // resource names
+    // storagePrivate is an array of names for our private buckets
+    storagePrivate.forEach(bucket=> {
+
+      // Resource names
       let Bucket = `${bucket}Bucket`
       let BucketParam = `${bucket}Param`
-      
-      // Add bucket name as a "STORAGE_<bucketname>" env var to all lambda functions
+
+      // Add bucket name as a "STORAGE_PRIVATE_<bucketname>" env var to all Lambda functions
       resKeys.forEach((k) => {
+        let BUCKET = `STORAGE_PRIVATE_${bucket.toUpperCase()}`
         if (cfn.Resources[k].Type === 'AWS::Serverless::Function') {
-          cfn.Resources[k].Properties.Environment.Variables[`STORAGE_${bucket}`] = { Ref: Bucket };
+          cfn.Resources[k].Properties.Environment.Variables[BUCKET] = { Ref: Bucket };
         }
       });
-      
-      // add standard cloudformation resources
+
+      // Add standard CloudFormation resources
       cfn.Resources[Bucket] = {
         Type: 'AWS::S3::Bucket',
         DeletionPolicy: 'Delete',
@@ -52,15 +55,15 @@ module.exports = function storage(arc, cfn) {
           }
         }
       }
-      
-      // add name to ssm params for runtime discovery
+
+      // Add name to ssm params for runtime discovery
       cfn.Resources[BucketParam] = {
         Type: 'AWS::SSM::Parameter',
         Properties: {
           Type: 'String',
           Name: {
             'Fn::Sub': [
-              '/${AWS::StackName}/storage/${bucket}',
+              '/${AWS::StackName}/storage-private/${bucket}',
               {bucket}
             ]
           },
@@ -68,7 +71,7 @@ module.exports = function storage(arc, cfn) {
         }
       }
 
-      // add iam policy for least-priv runtime access
+      // Add iam policy for least-priv runtime access
       let doc = cfn.Resources.StorageMacroPolicy.Properties.PolicyDocument.Statement[0]
       doc.Resource.push({
         'Fn::Sub': [
@@ -77,7 +80,6 @@ module.exports = function storage(arc, cfn) {
         ]
       })
 
-    // end arc.storage.forEach
     })
   }
 
