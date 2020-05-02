@@ -1,6 +1,6 @@
 module.exports = function storage(arc, cfn) {
 
-  let arc['storage-private'] = storagePrivate
+  let storagePrivate = arc['storage-private']
 
   // Only run if arc.storage is defined
   if (storagePrivate) {
