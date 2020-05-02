@@ -5,7 +5,7 @@ module.exports = function storage(arc, cfn) {
 
   let storagePrivate = arc['storage-private']
 
-  // Only run if arc.storage is defined
+  // Only run if @storage-private is defined
   if (storagePrivate) {
 
     // Validate the specified format
