@@ -23,13 +23,20 @@ module.exports = function storage(arc, cfn) {
         Roles: [{'Ref': 'Role'}],
       }
     }
-
+    let resKeys = Object.keys(cfn.Resources);
     // arc.storage is an array of names for our private buckets
     arc.storage.forEach(bucket=> {
       
       // resource names
       let Bucket = `${bucket}Bucket`
       let BucketParam = `${bucket}Param`
+      
+      // Add bucket name as a "STORAGE_<bucketname>" env var to all lambda functions
+      resKeys.forEach((k) => {
+        if (cfn.Resources[k].Type === 'AWS::Serverless::Function') {
+          cfn.Resources[k].Properties.Environment.Variables[`STORAGE_${bucket}`] = { Ref: Bucket };
+        }
+      });
       
       // add standard cloudformation resources
       cfn.Resources[Bucket] = {
