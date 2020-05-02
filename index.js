@@ -1,4 +1,5 @@
 let { toLogicalID } = require('@architect/utils')
+let validate = require('./validate')
 
 module.exports = function storage(arc, cfn) {
 
@@ -6,6 +7,9 @@ module.exports = function storage(arc, cfn) {
 
   // Only run if arc.storage is defined
   if (storagePrivate) {
+
+    // Validate the specified format
+    validate(storagePrivate)
 
     // First thing we do is declare a role for our macro resources
     cfn.Resources.StorageMacroPolicy = {
@@ -38,9 +42,9 @@ module.exports = function storage(arc, cfn) {
       let Bucket = `${ID}Bucket`
       let BucketParam = `${ID}Param`
 
-      // Add bucket name as a "STORAGE_PRIVATE_<bucketname>" env var to all Lambda functions
+      // Add bucket name as a "ARC_STORAGE_PRIVATE_<bucketname>" env var to all Lambda functions
       resKeys.forEach((k) => {
-        let BUCKET = `STORAGE_PRIVATE_${bucket.toUpperCase()}`
+        let BUCKET = `ARC_STORAGE_PRIVATE_${bucket.replace(/-/g, '_').toUpperCase()}`
         if (cfn.Resources[k].Type === 'AWS::Serverless::Function') {
           cfn.Resources[k].Properties.Environment.Variables[BUCKET] = { Ref: Bucket }
         }
