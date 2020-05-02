@@ -1,3 +1,5 @@
+let { toLogicalID } = require('@architect/utils')
+
 module.exports = function storage(arc, cfn) {
 
   let storagePrivate = arc['storage-private']
@@ -25,21 +27,24 @@ module.exports = function storage(arc, cfn) {
         Roles: [{'Ref': 'Role'}],
       }
     }
-    let resKeys = Object.keys(cfn.Resources);
+
+    let resKeys = Object.keys(cfn.Resources)
+
     // storagePrivate is an array of names for our private buckets
     storagePrivate.forEach(bucket=> {
 
       // Resource names
-      let Bucket = `${bucket}Bucket`
-      let BucketParam = `${bucket}Param`
+      let ID = toLogicalID(bucket)
+      let Bucket = `${ID}Bucket`
+      let BucketParam = `${ID}Param`
 
       // Add bucket name as a "STORAGE_PRIVATE_<bucketname>" env var to all Lambda functions
       resKeys.forEach((k) => {
         let BUCKET = `STORAGE_PRIVATE_${bucket.toUpperCase()}`
         if (cfn.Resources[k].Type === 'AWS::Serverless::Function') {
-          cfn.Resources[k].Properties.Environment.Variables[BUCKET] = { Ref: Bucket };
+          cfn.Resources[k].Properties.Environment.Variables[BUCKET] = { Ref: Bucket }
         }
-      });
+      })
 
       // Add standard CloudFormation resources
       cfn.Resources[Bucket] = {
