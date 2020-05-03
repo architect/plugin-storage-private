@@ -56,6 +56,16 @@ module.exports = function storage(arc, cfn) {
         Type: 'AWS::S3::Bucket',
         DeletionPolicy: 'Delete',
         Properties: {
+          PublicAccessBlockConfiguration: {
+            // Displayed as: 'Block public access to buckets and objects granted through new access control lists (ACLs)'
+            BlockPublicAcls : true,
+            // Displayed as: 'Block public access to buckets and objects granted through new public bucket or access point policies'
+            BlockPublicPolicy : true,
+            // Displayed as: 'Block public access to buckets and objects granted through any access control lists (ACLs)'
+            IgnorePublicAcls : true,
+            // Displayed as: 'Block public and cross-account access to buckets and objects through any public bucket or access point policies'
+            RestrictPublicBuckets : true
+          },
           BucketEncryption: {
             ServerSideEncryptionConfiguration: [{
               ServerSideEncryptionByDefault: {
