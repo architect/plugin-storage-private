@@ -84,10 +84,10 @@ module.exports = function storage(arc, cfn) {
           Name: {
             'Fn::Sub': [
               '/${AWS::StackName}/storage-private/${bucket}',
-              {bucket}
+              { bucket }
             ]
           },
-          Value: {Ref: Bucket}
+          Value: { Ref: Bucket }
         }
       }
 
@@ -96,7 +96,7 @@ module.exports = function storage(arc, cfn) {
       doc.Resource.push({
         'Fn::Sub': [
           'arn:aws:s3:::${bucket}',
-          {bucket: {'Ref': Bucket}}
+          { bucket: { 'Ref': Bucket } }
         ]
       })
 
