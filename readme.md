@@ -30,7 +30,7 @@ secureinfo
 
 ## Accessing your bucket names
 
-- Because CloudFormation provisions these buckets, your bucket name will be reformatted and provided a GUID by AWS
+- CloudFormation provisions these buckets, and by default your bucket name will be reformatted and provided a GUID by AWS
 - Thus, to deterministically access your bucket name, your Lambdas will be assigned a `ARC_STORAGE_PRIVATE_<bucketname>` env var (with any dashes converted to underscores)
   - Example: your app is named `myapp`, and your bucket is named `sensitive-data` in your `.arc` file
   - Your Lambda(s) would read the `ARC_STORAGE_PRIVATE_SENSITIVE_DATA` env var (which would be assigned a value similar to `myappstaging-sensitivedatabucket-1f8394rh4qtvb`)
