@@ -12,20 +12,15 @@ module.exports = function storage(arc, cfn) {
     validate(storagePrivate)
 
     // First thing we do is declare a role for our macro resources
-    cfn.Resources.StorageMacroPolicy = {
+    cfn.Resources.PrivateStorageMacroPolicy = {
       Type: 'AWS::IAM::Policy',
       DependsOn: 'Role',
       Properties: {
-        PolicyName: 'StorageMacroPolicy',
+        PolicyName: 'PrivateStorageMacroPolicy',
         PolicyDocument: {
           Statement: [{
             Effect: 'Allow',
-            Action: [
-              's3:DeleteObject',
-              's3:GetObject',
-              's3:ListBucket',
-              's3:PutObject'
-            ],
+            Action: [ 's3:*' ],
             Resource: []
           }]
         },
@@ -92,10 +87,16 @@ module.exports = function storage(arc, cfn) {
       }
 
       // Add IAM policy for least-priv runtime access
-      let doc = cfn.Resources.StorageMacroPolicy.Properties.PolicyDocument.Statement[0]
+      let doc = cfn.Resources.PrivateStorageMacroPolicy.Properties.PolicyDocument.Statement[0]
       doc.Resource.push({
         'Fn::Sub': [
           'arn:aws:s3:::${bucket}',
+          { bucket: { Ref: Bucket } }
+        ]
+      })
+      doc.Resource.push({
+        'Fn::Sub': [
+          'arn:aws:s3:::${bucket}/*',
           { bucket: { Ref: Bucket } }
         ]
       })
