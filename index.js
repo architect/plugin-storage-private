@@ -29,7 +29,7 @@ module.exports = function storage(arc, cfn) {
             Resource: []
           }]
         },
-        Roles: [{'Ref': 'Role'}],
+        Roles: [{ 'Ref': 'Role' }],
       }
     }
 
@@ -76,7 +76,7 @@ module.exports = function storage(arc, cfn) {
         }
       }
 
-      // Add name to ssm params for runtime discovery
+      // Add name to SSM params for runtime discovery
       cfn.Resources[BucketParam] = {
         Type: 'AWS::SSM::Parameter',
         Properties: {
@@ -91,12 +91,12 @@ module.exports = function storage(arc, cfn) {
         }
       }
 
-      // Add iam policy for least-priv runtime access
+      // Add IAM policy for least-priv runtime access
       let doc = cfn.Resources.StorageMacroPolicy.Properties.PolicyDocument.Statement[0]
       doc.Resource.push({
         'Fn::Sub': [
           'arn:aws:s3:::${bucket}',
-          { bucket: { 'Ref': Bucket } }
+          { bucket: { Ref: Bucket } }
         ]
       })
 

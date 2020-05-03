@@ -1,4 +1,4 @@
-# Architect storage-private macro changelog
+# Architect macro-storage-private changelog
 
 ---
 
@@ -7,6 +7,7 @@
 ### Added
 
 - (Re)born from @brianleroux's original Architect Macros example!
+- See also [`@architect/macro-storage-public`](https://www.npmjs.com/package/@architect/macro-storage-public)!
 
 ---
 

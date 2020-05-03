@@ -2,7 +2,10 @@
 
 ## [`@architect/macro-storage-private`](https://www.npmjs.com/package/@architect/macro-storage-private)
 
-> Architect serverless framework macro that defines any number of arbitrary private S3 buckets for your application
+> Architect serverless framework macro that defines any number of arbitrary **private** S3 buckets for your application
+
+[`@architect/macro-storage-private`](https://www.npmjs.com/package/@architect/macro-storage-private) provisions **private** S3 buckets for your application. If you need to provision **public** S3 buckets, check out [`@architect/macro-storage-public`](https://www.npmjs.com/package/@architect/macro-storage-public).
+
 
 ## Installation
 
