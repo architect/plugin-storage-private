@@ -2,7 +2,16 @@
 
 ---
 
-## [0.0.0] 2020-05-02
+## [1.0.0] 2020-06-22
+
+### Changed
+
+- Not much, things seem stable – no reported issues since shipping nearly two months ago!
+- Updated dependencies
+
+---
+
+## [0.0.1] 2020-05-02
 
 ### Added
 
