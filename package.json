@@ -1,6 +1,6 @@
 {
   "name": "@architect/macro-storage-private",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "Architect serverless framework macro that defines any number of arbitrary private S3 buckets",
   "main": "index.js",
   "scripts": {
