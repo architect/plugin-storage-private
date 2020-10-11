@@ -14,6 +14,7 @@
   "license": "Apache-2.0",
   "homepage": "https://arc.codes",
   "devDependencies": {
+    "@architect/eslint-config": "~1.0.0",
     "eslint": "^7.11.0"
   },
   "keywords": [
@@ -35,5 +36,8 @@
   ],
   "dependencies": {
     "@architect/utils": "~1.5.13"
+  },
+  "eslintConfig": {
+    "extends": "@architect/eslint-config"
   }
 }
