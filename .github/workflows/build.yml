@@ -12,11 +12,11 @@ jobs:
   # Test the build
   build:
     # Setup
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [ 12.x ]
-        # os: [windows-latest, ubuntu-latest, macOS-latest]
+        node-version: [ 12.x ] # Add 10.x, 14.x with more testing
+        os: [ ubuntu-latest ] # Add windows-latest, macOS-latest with more testing
 
     # Go
     steps:
