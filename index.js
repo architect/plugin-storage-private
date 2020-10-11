@@ -1,7 +1,7 @@
 let { toLogicalID } = require('@architect/utils')
 let validate = require('./validate')
 
-module.exports = function storage(arc, cfn) {
+module.exports = function storage (arc, cfn) {
 
   let storagePrivate = arc['storage-private']
 
@@ -18,20 +18,20 @@ module.exports = function storage(arc, cfn) {
       Properties: {
         PolicyName: 'PrivateStorageMacroPolicy',
         PolicyDocument: {
-          Statement: [{
+          Statement: [ {
             Effect: 'Allow',
             Action: [ 's3:*' ],
             Resource: []
-          }]
+          } ]
         },
-        Roles: [{ 'Ref': 'Role' }],
+        Roles: [ { 'Ref': 'Role' } ],
       }
     }
 
     let resKeys = Object.keys(cfn.Resources)
 
     // storagePrivate is an array of names for our private buckets
-    storagePrivate.forEach(bucket=> {
+    storagePrivate.forEach(bucket => {
 
       // Resource names
       let ID = toLogicalID(bucket)
@@ -53,20 +53,20 @@ module.exports = function storage(arc, cfn) {
         Properties: {
           PublicAccessBlockConfiguration: {
             // Displayed as: 'Block public access to buckets and objects granted through new access control lists (ACLs)'
-            BlockPublicAcls : true,
+            BlockPublicAcls: true,
             // Displayed as: 'Block public access to buckets and objects granted through new public bucket or access point policies'
-            BlockPublicPolicy : true,
+            BlockPublicPolicy: true,
             // Displayed as: 'Block public access to buckets and objects granted through any access control lists (ACLs)'
-            IgnorePublicAcls : true,
+            IgnorePublicAcls: true,
             // Displayed as: 'Block public and cross-account access to buckets and objects through any public bucket or access point policies'
-            RestrictPublicBuckets : true
+            RestrictPublicBuckets: true
           },
           BucketEncryption: {
-            ServerSideEncryptionConfiguration: [{
+            ServerSideEncryptionConfiguration: [ {
               ServerSideEncryptionByDefault: {
                 SSEAlgorithm: 'AES256'
               }
-            }]
+            } ]
           }
         }
       }
