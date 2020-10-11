@@ -14,7 +14,7 @@
   "license": "Apache-2.0",
   "homepage": "https://arc.codes",
   "devDependencies": {
-    "eslint": "^7.3.0"
+    "eslint": "^7.11.0"
   },
   "keywords": [
     "amazon",
@@ -34,6 +34,6 @@
     "serverless"
   ],
   "dependencies": {
-    "@architect/utils": "~1.5.9"
+    "@architect/utils": "~1.5.13"
   }
 }
