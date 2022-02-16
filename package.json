@@ -1,6 +1,6 @@
 {
   "name": "@architect/plugin-storage-private",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Architect serverless framework plugin that defines any number of arbitrary private S3 buckets",
   "main": "src/index.js",
   "scripts": {
