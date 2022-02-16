@@ -1,7 +1,7 @@
 {
-  "name": "@architect/macro-storage-private",
+  "name": "@architect/plugin-storage-private",
   "version": "1.0.0",
-  "description": "Architect serverless framework macro that defines any number of arbitrary private S3 buckets",
+  "description": "Architect serverless framework plugin that defines any number of arbitrary private S3 buckets",
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint . --fix",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/architect/macro-storage-private"
+    "url": "https://github.com/architect/plugin-storage-private"
   },
   "license": "Apache-2.0",
   "homepage": "https://arc.codes",
@@ -17,11 +17,11 @@
     "src/*"
   ],
   "dependencies": {
-    "@architect/utils": "~1.5.13"
+    "@architect/utils": "~3.0.4"
   },
   "devDependencies": {
-    "@architect/eslint-config": "~1.0.0",
-    "eslint": "^7.11.0"
+    "@architect/eslint-config": "~2.0.1",
+    "eslint": "^8.9.0"
   },
   "keywords": [
     "amazon",
@@ -34,7 +34,7 @@
     "cloud",
     "deployment",
     "lambda",
-    "macro",
+    "plugin",
     "node_modules",
     "npm",
     "plugin",
