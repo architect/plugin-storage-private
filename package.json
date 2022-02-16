@@ -2,7 +2,7 @@
   "name": "@architect/macro-storage-private",
   "version": "1.0.0",
   "description": "Architect serverless framework macro that defines any number of arbitrary private S3 buckets",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "lint": "eslint . --fix",
     "test": "npm run lint"
@@ -13,6 +13,9 @@
   },
   "license": "Apache-2.0",
   "homepage": "https://arc.codes",
+  "files": [
+    "src/*"
+  ],
   "dependencies": {
     "@architect/utils": "~1.5.13"
   },
